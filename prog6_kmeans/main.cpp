@@ -134,10 +134,15 @@ int main() {
   logToFile("./start.log", SAMPLE_RATE, data, clusterAssignments,
             clusterCentroids, M, N, K);
 
-  double startTime = CycleTimer::currentSeconds();
-  kMeansThread(data, clusterCentroids, clusterAssignments, M, N, K, epsilon);
-  double endTime = CycleTimer::currentSeconds();
-  printf("[Total Time]: %.3f ms\n", (endTime - startTime) * 1000);
+  double minTime = 1e30;
+  for (int i = 0; i < 5; ++i) {
+      double startTime = CycleTimer::currentSeconds();
+      kMeansThread(data, clusterCentroids, clusterAssignments, M, N, K, epsilon);
+      double endTime = CycleTimer::currentSeconds();
+      minTime = min(minTime, endTime - startTime);
+  }
+
+  printf("[Total Time]: %.3f ms\n", minTime * 1000);
 
   // Log the end state of the algorithm
   logToFile("./end.log", SAMPLE_RATE, data, clusterAssignments,
